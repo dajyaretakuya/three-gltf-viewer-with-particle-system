@@ -13,7 +13,7 @@ class ExplodeEmitter extends Emitter {
       velocityShape: Shape.SPHERE,
       velocity: new THREE.Vector3(30, 200, 30),
       velocityRange: new THREE.Vector3(10, 20, 10),
-      texture: new THREE.TextureLoader().load('img/explode.png'),
+      texture: new THREE.TextureLoader().load('../../img/explode.png'),
       size: 10,
       sizeRange: 100,
       sizeTween: new Tween( [0, 0.05, 0.3, 0.45], [0, 100, 300, 10] ),

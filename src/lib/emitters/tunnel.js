@@ -42,7 +42,7 @@ class TunnelEmitter extends Emitter {
       angleVelocity: 10,
       angleVelocityRange: 0,
       
-      texture: new TextureLoader().load('../../img/spikey.png'),
+      texture: new TextureLoader().load(require('../../img/spikey.png')),
 
       size: 8.0,
       sizeRange: 20.0,				

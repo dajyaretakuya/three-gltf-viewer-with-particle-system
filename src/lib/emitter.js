@@ -38,6 +38,8 @@ class ParticleEmitter {
 
   constructor(params) {
 
+    this.ready = 0;
+
     this.particles = []
     this.particlesPerSecond = 100
     this.particleDeathAge = 1.0
@@ -88,6 +90,7 @@ class ParticleEmitter {
   }
 
   createParticles() {
+    console.log("create particle");
     const count = this.particleCount 
     const positionArray = new Float32Array(count * 3)
     const colorArray = new Float32Array(count * 3)
@@ -139,6 +142,7 @@ class ParticleEmitter {
     this.particleCount = this.particlesPerSecond * Math.min(this.particleDeathAge, this.deathAge)
 
     this.geometry = new BufferGeometry()
+    console.log(this.texture)
     this.material = new ShaderMaterial({
       uniforms: {
         sampler_texture: { value: this.texture }
@@ -152,7 +156,6 @@ class ParticleEmitter {
     })
   
     this.mesh = new Points(this.geometry, this.material)
-
   }
 
   createParticle() {
@@ -203,7 +206,6 @@ class ParticleEmitter {
   }
 
   update(dt) {
-
     const recycleIndices = []
     const positionArray = this.geometry.attributes.position.array
     const opacityArray = this.geometry.attributes.opacity.array

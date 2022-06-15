@@ -21,7 +21,7 @@ class SnowEmitter extends Emitter {
       angleVelocity: 0,
       angleVelocityRange: 60,
       
-      texture : new THREE.TextureLoader().load( 'img/snowflake.png' ),
+      texture : new THREE.TextureLoader().load( require('../../img/snowflake.png') ),
         
       sizeTween: new Tween([0, 0.25], [1, 10] ),
       colorBase: new THREE.Vector3(0.66, 1.0, 0.9), 
