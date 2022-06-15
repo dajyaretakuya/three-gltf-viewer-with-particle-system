@@ -1,4 +1,5 @@
 import {
+  AdditiveBlending,
   AmbientLight,
   AnimationMixer,
   AxesHelper,
@@ -15,6 +16,7 @@ import {
   REVISION,
   Scene,
   SkeletonHelper,
+  TextureLoader,
   Vector3,
   WebGLRenderer,
   sRGBEncoding,
@@ -31,6 +33,15 @@ import { GUI } from 'dat.gui';
 
 import { environments } from '../assets/environment/index.js';
 import { createBackground } from '../lib/three-vignette.js';
+
+import FlameEmitter from './lib/emitters/flame'
+import TunnelEmitter from './lib/emitters/tunnel'
+import FireFlyEmitter from './lib/emitters/firefly'
+import ExplodeEmitter from './lib/emitters/explode'
+import SnowEmitter from './lib/emitters/snow'
+import ParticleSystem from './lib/system'
+import { Shape } from './lib/const'
+import Tween from './lib/tween'
 
 const DEFAULT_CAMERA = '[default]';
 
@@ -250,6 +261,7 @@ export class Viewer {
 
         resolve(gltf);
 
+
       }, undefined, reject);
 
     });
@@ -330,6 +342,14 @@ export class Viewer {
     console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
     this.printGraph(this.content);
 
+
+    
+    
+    this.ps = new ParticleSystem({
+      emitter: new TunnelEmitter()
+    })
+    this.scene.add(this.ps.mesh)
+    this.ps.start()
   }
 
   printGraph (node) {
