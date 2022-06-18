@@ -158,6 +158,12 @@ class ParticleEmitter {
     this.mesh = new Points(this.geometry, this.material)
   }
 
+  // specify position of each particle
+  // this only works when this.particle_mode equals "MARK"
+  specifyParticlePositions(positions) {
+
+  }
+
   createParticle() {
 
     const particle = new Particle()
@@ -167,7 +173,8 @@ class ParticleEmitter {
     
 
     if(this.positionShape == Shape.CUBE) {
-      particle.position = utils.randomVector3(this.position, this.positionRange)
+      // particle.position = utils.randomVector3(this.position, this.positionRange)
+      particle.position = new Vector3(0, 0, 0)
     }
 
     if(this.positionShape == Shape.SPHERE) {
@@ -240,7 +247,7 @@ class ParticleEmitter {
     this.geometry.attributes.angle.needsUpdate = true
     this.geometry.attributes.visible.needsUpdate = true
     this.geometry.attributes.opacity.needsUpdate = true
-    this.geometry.attributes.position.needsUpdate = true
+    //this.geometry.attributes.position.needsUpdate = true
 
     if(!this.alive) return
 
@@ -263,7 +270,7 @@ class ParticleEmitter {
       positionArray[i*3+1] = this.particles[i].position.y
       positionArray[i*3+2] = this.particles[i].position.z
     }
-    this.geometry.attributes.position.needsUpdate = true
+    //this.geometry.attributes.position.needsUpdate = true
 
     this.age += dt
 
