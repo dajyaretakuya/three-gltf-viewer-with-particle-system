@@ -1,6 +1,7 @@
 import Emitter from '../emitter'
 import Tween from '../tween'
 import { Shape } from '../const'
+import {PartitleEmitter, ParticleMode} from '../emitter';
 import {
   AdditiveBlending,
   AmbientLight,
@@ -49,14 +50,15 @@ class FireflyEmitter extends Emitter {
       
       texture: new TextureLoader().load(require('../../img/spark.png')),
 
-      size: 30.0,
-      sizeRange: 2.0,
+      size: 0.01,
+      sizeRange: 0.05,
       opacityTween: new Tween([0.0, 1.0, 1.1, 2.0, 2.1, 3.0, 3.1, 4.0, 4.1, 5.0, 5.1, 6.0, 6.1],[0.2, 0.2, 1.0, 1.0, 0.2, 0.2, 1.0, 1.0, 0.2, 0.2, 1.0, 1.0, 0.2]),				
-      color: new Vector3(0.30, 1.0, 0.6), 
+      color: new Vector3(0.30, 1.0, 0.8), 
       colorRange: new Vector3(0.3, 0.0, 0.0),
       particlesPerSecond: 1,
       particleDeathAge: 6.1,		
-      deathAge: 600
+      deathAge: 1,
+      mode: ParticleMode.MULTIPLE_MARK
     })
   }
 

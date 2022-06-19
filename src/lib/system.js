@@ -13,6 +13,10 @@ class ParticleSystem {
     this.mesh = this._emitter.mesh
   }
 
+  moveCamera(matrix) {
+    this._emitter.move(matrix)
+  }
+
   update() {
     const now = +new Date
     const dt = (now - this._startTime) / 1000

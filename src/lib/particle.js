@@ -56,7 +56,7 @@ class Particle {
   }
 
   update(dt) {
-    this.position.add(this.velocity.clone().multiplyScalar(dt))
+    // this.position.add(this.velocity.clone().multiplyScalar(dt))
     this.velocity.add(this.acceleration.clone().multiplyScalar(dt))
     this.angle += this.angleVelocity * DEG2RAD * dt
     this.angleVelocity += this.angleAcceleration * DEG2RAD * dt

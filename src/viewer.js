@@ -318,6 +318,12 @@ export class Viewer {
 
     this.scene.add(object);
     this.content = object;
+    
+    this.ps = new ParticleSystem({
+      emitter: new FireFlyEmitter()
+    });
+    this.scene.add(this.ps.mesh);
+    this.ps.start();
 
     this.state.addLights = true;
 
@@ -341,15 +347,6 @@ export class Viewer {
     window.content = this.content;
     console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
     this.printGraph(this.content);
-
-
-    
-    
-    this.ps = new ParticleSystem({
-      emitter: new FireFlyEmitter()
-    });
-    this.scene.add(this.ps.mesh);
-    this.ps.start();
     
   }
 

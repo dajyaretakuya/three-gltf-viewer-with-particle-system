@@ -128,6 +128,7 @@ class ParticleEmitter {
     this.mesh = new Points(this.geometry, this.material)
   }
 
+  // params.mode @ParticleMode
   setParameters(params) {
 
     this.sizeTween = new Tween()
@@ -136,6 +137,7 @@ class ParticleEmitter {
 
     Object.assign(this, params)
 
+    this.mode = params.mode
     this.particles = []
     this.age = 0.0
     this.alive = true
@@ -159,7 +161,7 @@ class ParticleEmitter {
   }
 
   // specify position of each particle
-  // this only works when this.particle_mode equals "MARK"
+  // this only works when this.particle_mode equals ParticleMode.MULTIPLE_MASK
   specifyParticlePositions(positions) {
 
   }
@@ -170,11 +172,15 @@ class ParticleEmitter {
     particle.sizeTween = this.sizeTween
     particle.colorTween = this.colorTween
     particle.opacityTween = this.opacityTween
-    
 
     if(this.positionShape == Shape.CUBE) {
-      // particle.position = utils.randomVector3(this.position, this.positionRange)
-      particle.position = new Vector3(0, 0, 0)
+      // PariticleMode only works under positionShape is CUBE
+      if(this.mode == ParticleMode.CROWDED) {
+        particle.position = utils.randomVector3(this.position, this.positionRange)
+      }
+      else if(this.mode==ParticleMode.MULTIPLE_MARK) {
+        particle.position = new Vector3(0.01, 0.01, 0)
+      }
     }
 
     if(this.positionShape == Shape.SPHERE) {
@@ -203,13 +209,22 @@ class ParticleEmitter {
 
     particle.size = utils.randomValue(this.size, this.sizeRange)
 
-    const color = utils.randomVector3(this.color, this.colorRange)
+    const color = /*utils.randomVector3(this.color, this.colorRange)*/new Vector3(0, 1, 0.5)
     particle.color = new Color().setHSL(color.x, color.y, color.z)
 
     particle.opacity = utils.randomValue(this.opacity, this.opacityRange)
     particle.age = 0
 
     return particle
+  }
+
+
+  move(matrix) {
+    for(let i = 0; i < this.particleCount; i++) {
+      const particle = this.particles[i]
+      particle.position.applyMatrix4(matrix)
+      console.log([particle.position.x, particle.position.y, particle.position.z])
+    }
   }
 
   update(dt) {
@@ -247,7 +262,7 @@ class ParticleEmitter {
     this.geometry.attributes.angle.needsUpdate = true
     this.geometry.attributes.visible.needsUpdate = true
     this.geometry.attributes.opacity.needsUpdate = true
-    //this.geometry.attributes.position.needsUpdate = true
+    this.geometry.attributes.position.needsUpdate = true
 
     if(!this.alive) return
 
@@ -270,7 +285,7 @@ class ParticleEmitter {
       positionArray[i*3+1] = this.particles[i].position.y
       positionArray[i*3+2] = this.particles[i].position.z
     }
-    //this.geometry.attributes.position.needsUpdate = true
+    this.geometry.attributes.position.needsUpdate = true
 
     this.age += dt
 
@@ -284,3 +299,8 @@ class ParticleEmitter {
 }
 
 export default ParticleEmitter
+export const ParticleMode = {
+  "CROWDED": 1,
+  "SINGLE_MARK": 2,
+  "MULTIPLE_MARK": 3
+}
