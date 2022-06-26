@@ -67,8 +67,8 @@ class Particle {
     }
 
     if(this.colorTween.times.length > 0) {
-      const colorHSL = this.colorTween.lerp(this.age)
-      this.color = new Color().setHSL(colorHSL.x, colorHSL.y, colorHSL.z)
+      // const colorHSL = this.colorTween.lerp(this.age)
+      // this.color = new Color().setHSL(colorHSL.x, colorHSL.y, colorHSL.z)
     }
 
     if(this.opacityTween.times.length > 0) {

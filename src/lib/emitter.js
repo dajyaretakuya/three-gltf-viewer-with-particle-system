@@ -85,13 +85,23 @@ class ParticleEmitter {
 
     this.blendMode = NormalBlending
 
+    this.markColor = new Color().setHSL(0, 1, 0.5)
+
     this.setParameters(params)
-    this.createParticles()
+    // this.createParticles()
+  }
+
+  // only works on MARK or MULTIPLE_MARK mode
+  setMarkPositions(marks) {
+    this.marks = marks;
   }
 
   createParticles() {
-    console.log("create particle");
-    const count = this.particleCount 
+
+    let count = this.particleCount
+    if(this.mode==ParticleMode.MULTIPLE_MARK) {
+      count = this.marks.length
+    }
     const positionArray = new Float32Array(count * 3)
     const colorArray = new Float32Array(count * 3)
 
@@ -100,8 +110,15 @@ class ParticleEmitter {
     const opacityArray = new Float32Array(count)
     const visibleArray = new Float32Array(count)
     
+    let markColor = this.markColor
     for(let i = 0; i < count; i++) {
-      const particle = this.createParticle()
+      let particle = null
+      if(this.mode == ParticleMode.CROWDED) {
+        particle = this.createParticle()
+      }
+      else {
+        particle = this.createMark(this.marks[i], markColor)
+      }
       positionArray[i*3] = particle.position.x
       positionArray[i*3+1] = particle.position.y
       positionArray[i*3+2] = particle.position.z
@@ -160,12 +177,6 @@ class ParticleEmitter {
     this.mesh = new Points(this.geometry, this.material)
   }
 
-  // specify position of each particle
-  // this only works when this.particle_mode equals ParticleMode.MULTIPLE_MASK
-  specifyParticlePositions(positions) {
-
-  }
-
   createParticle() {
 
     const particle = new Particle()
@@ -174,13 +185,7 @@ class ParticleEmitter {
     particle.opacityTween = this.opacityTween
 
     if(this.positionShape == Shape.CUBE) {
-      // PariticleMode only works under positionShape is CUBE
-      if(this.mode == ParticleMode.CROWDED) {
-        particle.position = utils.randomVector3(this.position, this.positionRange)
-      }
-      else if(this.mode==ParticleMode.MULTIPLE_MARK) {
-        particle.position = new Vector3(0.01, 0.01, 0)
-      }
+      particle.position = utils.randomVector3(this.position, this.positionRange)
     }
 
     if(this.positionShape == Shape.SPHERE) {
@@ -209,8 +214,32 @@ class ParticleEmitter {
 
     particle.size = utils.randomValue(this.size, this.sizeRange)
 
-    const color = /*utils.randomVector3(this.color, this.colorRange)*/new Vector3(0, 1, 0.5)
+    const color = utils.randomVector3(this.color, this.colorRange)
     particle.color = new Color().setHSL(color.x, color.y, color.z)
+
+    particle.opacity = utils.randomValue(this.opacity, this.opacityRange)
+    particle.age = 0
+
+    return particle
+  }
+
+  createMark(position, markColor) {
+    const particle = new Particle()
+    particle.sizeTween = this.sizeTween
+    particle.colorTween = this.colorTween
+    particle.opacityTween = this.opacityTween
+
+    particle.position = position
+    console.log(particle.position)
+
+    particle.acceleration = utils.randomVector3(this.acceleration, this.accelerationRange)
+    
+    particle.angle = utils.randomValue(this.angle, this.angleRange)
+    particle.angleVelocity = utils.randomValue(this.angleVelocity, this.angleVelocityRange)
+    particle.angleAcceleration = utils.randomValue(this.angleAcceleration, this.angleAccelerationRange)
+
+    particle.size = utils.randomValue(this.size, this.sizeRange)
+    particle.color = markColor
 
     particle.opacity = utils.randomValue(this.opacity, this.opacityRange)
     particle.age = 0
@@ -258,11 +287,11 @@ class ParticleEmitter {
     }
     
     this.geometry.attributes.size.needsUpdate = true
-    this.geometry.attributes.color.needsUpdate = true
+    // this.geometry.attributes.color.needsUpdate = true
     this.geometry.attributes.angle.needsUpdate = true
     this.geometry.attributes.visible.needsUpdate = true
     this.geometry.attributes.opacity.needsUpdate = true
-    this.geometry.attributes.position.needsUpdate = true
+    // this.geometry.attributes.position.needsUpdate = true
 
     if(!this.alive) return
 
@@ -279,19 +308,25 @@ class ParticleEmitter {
 
     for(let j = 0;j < recycleIndices.length; j++) {
       let i = recycleIndices[j]
-      this.particles[i] = this.createParticle()
+      if(this.mode==ParticleMode.CROWDED) {
+        this.particles[i] = this.createParticle()
+      }
+      else {
+        this.particles[i] = this.createMark(this.marks[j], this.markColor)
+      }
       this.particles[i].alive = 1.0
       positionArray[i*3] = this.particles[i].position.x
       positionArray[i*3+1] = this.particles[i].position.y
       positionArray[i*3+2] = this.particles[i].position.z
     }
-    this.geometry.attributes.position.needsUpdate = true
+    // this.geometry.attributes.position.needsUpdate = true
 
     this.age += dt
 
     if(this.age > this.deathAge && !this.loop) {
       this.alive = false
     }
+
 
   }
 

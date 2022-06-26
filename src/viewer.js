@@ -4,6 +4,7 @@ import {
   AnimationMixer,
   AxesHelper,
   Box3,
+  Matrix4,
   Cache,
   DirectionalLight,
   GridHelper,
@@ -20,6 +21,7 @@ import {
   Vector3,
   WebGLRenderer,
   sRGBEncoding,
+  Mesh
 } from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -268,6 +270,13 @@ export class Viewer {
 
   }
 
+  getCentroid(objMesh) {
+    
+    let centroid = new Vector3();
+    objMesh.getWorldPosition( centroid );
+    return centroid;
+  }
+
   /**
    * @param {THREE.Object3D} object
    * @param {Array<THREE.AnimationClip} clips
@@ -318,16 +327,26 @@ export class Viewer {
 
     this.scene.add(object);
     this.content = object;
-    
-    this.ps = new ParticleSystem({
-      emitter: new FireFlyEmitter()
-    });
-    this.scene.add(this.ps.mesh);
-    this.ps.start();
 
     this.state.addLights = true;
 
+    this.markedCentroids = [];
+
     this.content.traverse((node) => {
+      let targetNames = ['Cube'];
+      if(targetNames.includes(node.name)) {
+        console.log("target found");
+        // calculate centroid
+        if(node.isObject3D) {
+          this.markedCentroids.push(this.getCentroid(node));
+          node.traverse((mesh)=>{
+            if(mesh.isMesh) {
+              console.log(mesh.name);
+              this.markedCentroids.push(this.getCentroid(mesh));
+            }
+          })
+        }
+      }
       if (node.isLight) {
         this.state.addLights = false;
       } else if (node.isMesh) {
@@ -337,6 +356,14 @@ export class Viewer {
     });
 
     this.setClips(clips);
+    
+    this.ps = new ParticleSystem({
+      emitter: new FireFlyEmitter(),
+    });
+    this.ps.emitter.setMarkPositions(this.markedCentroids);
+    this.ps.emitter.createParticles();
+    this.scene.add(this.ps.mesh);
+    this.ps.start();
 
     this.updateLights();
     this.updateGUI();
@@ -345,8 +372,8 @@ export class Viewer {
     this.updateDisplay();
 
     window.content = this.content;
-    console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
-    this.printGraph(this.content);
+    // console.info('[glTF Viewer] THREE.Scene exported as `window.content`.');
+    // this.printGraph(this.content);
     
   }
 
