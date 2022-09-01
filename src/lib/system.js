@@ -17,17 +17,17 @@ class ParticleSystem {
     this._emitter.move(matrix)
   }
 
-  update() {
-    const now = +new Date
-    const dt = (now - this._startTime) / 1000
+  update(dt) {
+    // const now = +new Date
+    //const dt = (now - this._startTime) / 1000
     this._emitter.update(dt*0.5)
-    this._startTime = now
-    this.id = requestAnimationFrame(this.update.bind(this))
+    // this._startTime = now
+    // this.id = requestAnimationFrame(this.update.bind(this))
   }
 
   start() {
-    this._startTime = +new Date
-    this.update()
+    // this._startTime = +new Date
+    // this.update()
   }
 
   stop() {

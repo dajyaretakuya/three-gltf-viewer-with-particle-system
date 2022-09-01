@@ -175,6 +175,10 @@ export class Viewer {
     this.controls.update();
     this.stats.update();
     this.mixer && this.mixer.update(dt);
+    if(this.ps) {
+
+      this.ps.update(dt);
+    }
     this.render();
 
     this.prevTime = time;
@@ -363,7 +367,7 @@ export class Viewer {
     this.ps.emitter.setMarkPositions(this.markedCentroids);
     this.ps.emitter.createParticles();
     this.scene.add(this.ps.mesh);
-    this.ps.start();
+    //this.ps.start();
 
     this.updateLights();
     this.updateGUI();

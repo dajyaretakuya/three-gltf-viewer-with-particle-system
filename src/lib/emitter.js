@@ -161,7 +161,7 @@ class ParticleEmitter {
     this.particleCount = this.particlesPerSecond * Math.min(this.particleDeathAge, this.deathAge)
 
     this.geometry = new BufferGeometry()
-    console.log(this.texture)
+    // console.log(this.texture)
     this.material = new ShaderMaterial({
       uniforms: {
         sampler_texture: { value: this.texture }
@@ -230,7 +230,7 @@ class ParticleEmitter {
     particle.opacityTween = this.opacityTween
 
     particle.position = position
-    console.log(particle.position)
+    // console.log(particle.position)
 
     particle.acceleration = utils.randomVector3(this.acceleration, this.accelerationRange)
     
@@ -252,7 +252,7 @@ class ParticleEmitter {
     for(let i = 0; i < this.particleCount; i++) {
       const particle = this.particles[i]
       particle.position.applyMatrix4(matrix)
-      console.log([particle.position.x, particle.position.y, particle.position.z])
+      // console.log([particle.position.x, particle.position.y, particle.position.z])
     }
   }
 
